@@ -1,26 +1,13 @@
-NAME=docker-madminer-all
-ML_FOLDER=docker-madminer-ml
-PH_FOLDER=docker-madminer-physics
-REGISTRY=madminertool
-VERSION=$(shell cat ./VERSION)
+DOCKER_NAME=madminer-jupiter-env
+DOCKER_REGISTRY=madminertool
+DOCKER_VERSION=$(shell cat ./VERSION)
 
 
-all: build clean copy push
-
-
-.PHONY: clean
-clean:
-	@find . -name "requirements-*.txt" -delete
-
-
-.PHONY: copy
-copy:
-	@cp ../$(ML_FOLDER)/requirements.txt requirements-ml.txt
-	@cp ../$(PH_FOLDER)/requirements.txt requirements-ph.txt
+all: build push
 
 
 .PHONY: build
-build: copy
+build:
 	@docker build . --tag $(REGISTRY)/$(NAME):$(VERSION) --tag $(REGISTRY)/$(NAME):latest
 
 

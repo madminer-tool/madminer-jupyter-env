@@ -8,7 +8,7 @@
 ### - Delphes
 ###
 ### Please consider, that even if this Dockerfile definition is extremely similar as the one
-### used for the physics steps ("docker-madminer-physics"), it is better not to depend on it,
+### used for the "madminer-workflow-ph" Docker image, it is better not to depend on it,
 ### given that the common sections between the two will be moved to a MadMiner provided
 ### "heavy" version image soon enough.
 ###
@@ -63,15 +63,13 @@ ENV ROOT_INCLUDE_PATH $ROOT_INCLUDE_PATH:${SOFTWARE_FOLDER}/${MG_FOLDER}/Delphes
 WORKDIR ${PROJECT_FOLDER}
 
 #### Copy files
-COPY requirements-ml.txt requirements-ph.txt ./
+COPY requirements-2.txt requirements-3.txt ./
 
 
 # Install Python2 dependencies
 RUN python2 -m pip install --upgrade pip && \
-    python2 -m pip install --no-cache-dir --requirement requirements-ml.txt && \
-    python2 -m pip install --no-cache-dir --requirement requirements-ph.txt
+    python2 -m pip install --no-cache-dir --requirement requirements-2.txt
 
 # Install Python3 dependencies
 RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --no-cache-dir --requirement requirements-ml.txt && \
-    python3 -m pip install --no-cache-dir --requirement requirements-ph.txt
+    python3 -m pip install --no-cache-dir --requirement requirements-3.txt
