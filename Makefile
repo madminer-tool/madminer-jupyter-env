@@ -1,4 +1,4 @@
-DOCKER_NAME=madminer-jupiter-env
+DOCKER_NAME=madminer-jupyter-env
 DOCKER_REGISTRY=madminertool
 DOCKER_VERSION=$(shell cat ./VERSION)
 
