@@ -63,13 +63,12 @@ ENV ROOT_INCLUDE_PATH $ROOT_INCLUDE_PATH:${SOFTWARE_FOLDER}/${MG_FOLDER}/Delphes
 WORKDIR ${PROJECT_FOLDER}
 
 #### Copy files
-COPY requirements-2.txt requirements-3.txt ./
+COPY requirements.txt ./
 
 
-# Install Python2 dependencies
-RUN python2 -m pip install --upgrade pip && \
-    python2 -m pip install --no-cache-dir --requirement requirements-2.txt
+# Install Python2 dependencies (Numpy f2py binary)
+RUN python2 -m pip install --no-cache-dir numpy
 
 # Install Python3 dependencies
 RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --no-cache-dir --requirement requirements-3.txt
+    python3 -m pip install --no-cache-dir --requirement requirements.txt
