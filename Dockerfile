@@ -2,8 +2,7 @@
 ###
 ### This Dockerfile builds the Docker image for the MadMiner "heavy-weight" environment.
 ### The "heavy-weight" environment provides a working installation of MadGraph 5
-### and all the necessary sub-dependencies to run Physics-dependent steps:
-### - lhapdf6
+### and all the necessary sub-dependencies to run Physics dependent steps:
 ### - pythia8
 ### - Delphes
 ###
@@ -52,7 +51,8 @@ ENV PATH $PATH:$ROOTSYS/bin
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$ROOTSYS/lib
 ENV DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH:$ROOTSYS/lib
 
-RUN echo "install lhapdf6" | python2 ${SOFTWARE_FOLDER}/${MG_BINARY}
+# Skip the auto-update on the first execution
+RUN echo "n" | python2 ${SOFTWARE_FOLDER}/${MG_BINARY}
 RUN echo "install pythia8" | python2 ${SOFTWARE_FOLDER}/${MG_BINARY}
 RUN echo "install Delphes" | python2 ${SOFTWARE_FOLDER}/${MG_BINARY}
 
