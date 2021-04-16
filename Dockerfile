@@ -37,13 +37,22 @@ ENV PROJECT_FOLDER "/madminer"
 ENV SOFTWARE_FOLDER "/madminer/software"
 
 
-#### Install MadGraph 5
-WORKDIR ${SOFTWARE_FOLDER}
+#### Copy files
+COPY requirements.txt ${PROJECT_FOLDER}
 
+# Install Python3 dependencies
+RUN python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir --requirement ${PROJECT_FOLDER}/requirements.txt
+
+
+#### Install MadGraph 5
 ENV MG_VERSION "MG5_aMC_v2.9.3"
 ENV MG_FOLDER "MG5_aMC_v2_9_3"
 ENV MG_BINARY "MG5_aMC_v2_9_3/bin/mg5_aMC"
-RUN curl -sSL "https://launchpad.net/mg5amcnlo/2.0/2.9.x/+download/${MG_VERSION}.tar.gz" | tar -xzv
+
+RUN mkdir -p ${SOFTWARE_FOLDER} && true \
+    | curl -sSL "https://launchpad.net/mg5amcnlo/2.0/2.9.x/+download/${MG_VERSION}.tar.gz" \
+    | tar -xz -C ${SOFTWARE_FOLDER}
 
 # ROOT environment variables
 ENV ROOTSYS /usr/local
@@ -51,7 +60,8 @@ ENV PATH $PATH:$ROOTSYS/bin
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$ROOTSYS/lib
 ENV DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH:$ROOTSYS/lib
 
-# Skip the auto-update on the first execution
+
+#### Install Pythia8 and Delphes
 RUN echo "n" | python3 ${SOFTWARE_FOLDER}/${MG_BINARY}
 RUN echo "install pythia8" | python3 ${SOFTWARE_FOLDER}/${MG_BINARY}
 RUN echo "install Delphes" | python3 ${SOFTWARE_FOLDER}/${MG_BINARY}
@@ -63,11 +73,3 @@ ENV ROOT_INCLUDE_PATH $ROOT_INCLUDE_PATH:${SOFTWARE_FOLDER}/${MG_FOLDER}/Delphes
 
 #### Set working directory
 WORKDIR ${PROJECT_FOLDER}
-
-#### Copy files
-COPY requirements.txt ./
-
-
-# Install Python3 dependencies
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --no-cache-dir --requirement requirements.txt
