@@ -68,9 +68,6 @@ WORKDIR ${PROJECT_FOLDER}
 COPY requirements.txt ./
 
 
-# Install Python2 dependencies (Numpy f2py binary)
-RUN python2 -m pip install --no-cache-dir numpy
-
 # Install Python3 dependencies
 RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install --no-cache-dir --requirement requirements.txt
