@@ -29,4 +29,4 @@ make push
 [madgraph-website]: https://launchpad.net/mg5amcnlo
 [madminer-package]: https://github.com/diana-hep/madminer
 [madminer-tutorial]: https://cranmer.github.io/madminer-tutorial/intro.html
-[pythia-website]: http://home.thep.lu.se/Pythia/
+[pythia-website]: https://pythia.org/
