@@ -15,8 +15,8 @@
 
 
 #### Base image
-#### Reference: https://github.com/diana-hep/madminer/blob/master/Dockerfile
-FROM madminertool/docker-madminer:latest
+#### Reference: https://github.com/root-project/root-docker/blob/master/ubuntu/Dockerfile
+FROM rootproject/root:6.24.00-ubuntu20.04
 
 
 #### Install binary dependencies
@@ -29,7 +29,8 @@ RUN apt-get update && \
         gfortran \
         build-essential \
         ca-certificates \
-        libboost-all-dev
+        libboost-all-dev \
+        python3-pip
 
 
 #### Define working folders
@@ -46,9 +47,9 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip && \
 
 
 #### MadGraph 5 environment variables
-ENV MG_VERSION "MG5_aMC_v2.9.3"
-ENV MG_FOLDER "MG5_aMC_v2_9_3"
-ENV MG_BINARY "MG5_aMC_v2_9_3/bin/mg5_aMC"
+ENV MG_VERSION "MG5_aMC_v2.9.4"
+ENV MG_FOLDER "MG5_aMC_v2_9_4"
+ENV MG_BINARY "MG5_aMC_v2_9_4/bin/mg5_aMC"
 
 #### CERN ROOT environment variables
 ENV PATH $PATH:$ROOTSYS/bin
