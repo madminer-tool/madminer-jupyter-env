@@ -15,8 +15,8 @@
 
 
 #### Base image
-#### Reference: https://github.com/diana-hep/madminer/blob/master/Dockerfile
-FROM madminertool/docker-madminer:latest
+#### Reference: https://github.com/root-project/root-docker/blob/master/ubuntu/Dockerfile
+FROM rootproject/root:6.24.00-ubuntu20.04
 
 
 #### Install binary dependencies
@@ -29,7 +29,8 @@ RUN apt-get update && \
         gfortran \
         build-essential \
         ca-certificates \
-        libboost-all-dev
+        libboost-all-dev \
+        python3-pip
 
 
 #### Define working folders
