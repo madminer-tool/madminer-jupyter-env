@@ -39,7 +39,7 @@ ENV SOFTWARE_FOLDER "/madminer/software"
 
 
 #### Copy files
-COPY requirements.txt ${PROJECT_FOLDER}
+COPY requirements.txt ${PROJECT_FOLDER}/
 
 # Install Python3 dependencies
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
