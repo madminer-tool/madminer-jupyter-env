@@ -1,5 +1,8 @@
 # Madminer jupyter env
 
+[![Docker pulls][docker-pulls-badge]][docker-pulls-link]
+[![MIT license][mit-license-badge]][mit-license-link]
+
 
 ## About
 This repository defines the Docker image that will be used in the [Madminer tutorial][madminer-tutorial].
@@ -24,6 +27,11 @@ export DOCKERPASS=<your_dockerhub_password>
 make push
 ```
 
+
+[docker-pulls-badge]: https://img.shields.io/docker/pulls/madminertool/madminer-jupyter-env.svg
+[docker-pulls-link]: https://hub.docker.com/r/madminertool/madminer-jupyter-env
+[mit-license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
+[mit-license-link]: https://github.com/scailfin/madminer-jupyter-env/blob/master/LICENSE
 
 [delphes-website]: https://cp3.irmp.ucl.ac.be/projects/delphes
 [madgraph-website]: https://launchpad.net/mg5amcnlo
