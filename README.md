@@ -31,10 +31,10 @@ make push
 [docker-pulls-badge]: https://img.shields.io/docker/pulls/madminertool/madminer-jupyter-env.svg
 [docker-pulls-link]: https://hub.docker.com/r/madminertool/madminer-jupyter-env
 [mit-license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
-[mit-license-link]: https://github.com/scailfin/madminer-jupyter-env/blob/master/LICENSE
+[mit-license-link]: https://github.com/madminer-tool/madminer-jupyter-env/blob/master/LICENSE
 
 [delphes-website]: https://cp3.irmp.ucl.ac.be/projects/delphes
 [madgraph-website]: https://launchpad.net/mg5amcnlo
-[madminer-package]: https://github.com/diana-hep/madminer
-[madminer-tutorial]: https://cranmer.github.io/madminer-tutorial/intro.html
+[madminer-package]: https://github.com/madminer-tool/madminer
+[madminer-tutorial]: https://madminer-tool.github.io/madminer-tutorial
 [pythia-website]: https://pythia.org/
