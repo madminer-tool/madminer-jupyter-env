@@ -11,7 +11,7 @@
 ### given that the common sections between the two will be moved to a MadMiner provided
 ### "heavy" version image soon enough.
 ###
-### Check: https://github.com/diana-hep/madminer/issues/421
+### Check: https://github.com/madminer-tool/madminer/issues/421
 
 
 #### Base image
