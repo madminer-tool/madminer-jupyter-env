@@ -12,6 +12,14 @@ The provided Docker image contains all the necessary binaries and dependencies t
 [MadGraph 5][madgraph-website], [Pythia 8][pythia-website] and [Delphes][delphes-website] using Madminer, 
 to later on perform Machine Learning analysis.
 
+In addition, it **must** define an environment variable pointing to the _MadGraph_ installation folder.
+This allows the tutorial and the Docker environment to be fully decoupled, and evolve at different speeds.
+In this case:
+
+```dockerfile
+ENV MG_FOLDER_PATH "/madminer/software/MG5_aMC_vX_Y_Z"
+```
+
 
 ## Docker
 To build a new Docker image for local testing:
