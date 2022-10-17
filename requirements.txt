@@ -3,9 +3,5 @@ jupyter==1.0.0
 madminer==0.9.3
 matplotlib==3.2.2
 
-# Avoid incompatible pyparsing 3.X.X
-# Ref: https://github.com/madminer-tool/madminer-jupyter-env/issues/5
-pyparsing==2.4.7
-
 # Necessary for Python3 MadGraph versions
 six==1.15.0
