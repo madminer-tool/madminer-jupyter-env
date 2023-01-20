@@ -38,14 +38,6 @@ ENV PROJECT_FOLDER "/madminer"
 ENV SOFTWARE_FOLDER "/madminer/software"
 
 
-#### Copy files
-COPY requirements.txt ${PROJECT_FOLDER}/
-
-# Install Python3 dependencies
-RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir --requirement ${PROJECT_FOLDER}/requirements.txt
-
-
 #### MadGraph 5 environment variables
 ENV MG_VERSION "MG5_aMC_v2.9.4"
 ENV MG_FOLDER "MG5_aMC_v2_9_4"
@@ -56,6 +48,10 @@ ENV MG_BINARY_PATH "${SOFTWARE_FOLDER}/${MG_FOLDER}/bin/mg5_aMC"
 ENV PATH $PATH:$ROOTSYS/bin
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$ROOTSYS/lib
 
+
+### Install MadGraph 5 Python dependencies
+RUN python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir six==1.15.0
 
 #### Install MadGraph 5
 RUN mkdir -p ${SOFTWARE_FOLDER} && true \
@@ -74,6 +70,14 @@ RUN echo "import model EWdim6-full" | python3 ${MG_BINARY_PATH}
 
 # Delphes environment variables
 ENV ROOT_INCLUDE_PATH "${ROOT_INCLUDE_PATH}:${MG_FOLDER_PATH}/Delphes/external"
+
+
+#### Copy files
+COPY requirements.txt ${PROJECT_FOLDER}/
+
+# Install Python3 dependencies
+RUN python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir --requirement ${PROJECT_FOLDER}/requirements.txt
 
 
 #### Set working directory
