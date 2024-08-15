@@ -62,7 +62,11 @@ RUN mkdir -p ${SOFTWARE_FOLDER} && true \
 #### Install Pythia8 and Delphes
 RUN echo "n" | python3 ${MG_BINARY_PATH}
 RUN echo "install pythia8" | python3 ${MG_BINARY_PATH}
+RUN grep '^pythia8_path =' ${MG_FOLDER_PATH}/input/mg5_configuration.txt
+RUN grep '^mg5amc_py8_interface_path =' ${MG_FOLDER_PATH}/input/mg5_configuration.txt
+RUN grep '^lhapdf_py3 =' ${MG_FOLDER_PATH}/input/mg5_configuration.txt
 RUN echo "install Delphes" | python3 ${MG_BINARY_PATH}
+RUN command -v ${MG_FOLDER_PATH}/Delphes/DelphesHepMC3
 
 # Turn ON Python2 -> Python3 models conversion
 RUN echo "set auto_convert_model T" | python3 ${MG_BINARY_PATH}

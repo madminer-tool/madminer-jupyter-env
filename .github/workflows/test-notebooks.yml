@@ -1,0 +1,191 @@
+name: Test notebooks
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and export
+        uses: docker/build-push-action@v6
+        with:
+          tags: madminer-jupyter-env:latest
+          outputs: type=docker,dest=/tmp/image.tar
+          cache-from: type=gha
+          cache-to: type=gha
+
+      - name: Upload the image as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image
+          path: /tmp/image.tar
+
+  tutorial_particle_physics_1:
+    needs: build
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 1_setup.ipynb
+      outputs: data/setup.h5
+
+  tutorial_particle_physics_2a:
+    needs: tutorial_particle_physics_1
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 2a_parton_level_analysis.ipynb
+      outputs: >-
+        data/lhe_data_shuffled.h5
+        data/lhe_data.h5
+
+  tutorial_particle_physics_2b:
+    needs: tutorial_particle_physics_1
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 2b_delphes_level_analysis.ipynb
+      outputs: >-
+        data/delphes_data_shuffled.h5
+        data/delphes_data.h5
+
+  tutorial_particle_physics_3a:
+    needs: tutorial_particle_physics_2a
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 3a_likelihood_ratio.ipynb
+      outputs: >-
+        models/alices_pt_settings.json
+        models/alices_pt_state_dict.pt
+        models/alices_pt_theta_means.npy
+        models/alices_pt_theta_stds.npy
+        models/alices_pt_x_means.npy
+        models/alices_pt_x_stds.npy
+        models/alices_settings.json
+        models/alices_state_dict.pt
+        models/alices_theta_means.npy
+        models/alices_theta_stds.npy
+        models/alices_x_means.npy
+        models/alices_x_stds.npy
+
+  tutorial_particle_physics_3b:
+    needs: tutorial_particle_physics_2a
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 3b_score.ipynb
+      outputs: >-
+        models/sally_settings.json
+        models/sally_state_dict.pt
+        models/sally_x_means.npy
+        models/sally_x_stds.npy
+
+  tutorial_particle_physics_3c:
+    needs: tutorial_particle_physics_2a
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 3c_likelihood.ipynb
+      outputs: >-
+        models/scandal_settings.json
+        models/scandal_state_dict.pt
+        models/scandal_theta_means.npy
+        models/scandal_theta_stds.npy
+        models/scandal_x_means.npy
+        models/scandal_x_stds.npy
+
+  tutorial_particle_physics_4a:
+    # "no SCANDAL" (w/o 3c) as in the output of the current notebook.
+    needs: [tutorial_particle_physics_3a, tutorial_particle_physics_3b]
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 4a_limits.ipynb
+      outputs: limits/limits.npy
+
+  tutorial_particle_physics_4b:
+    needs: [tutorial_particle_physics_3a, tutorial_particle_physics_3b]
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 4b_fisher_information.ipynb
+
+  tutorial_particle_physics_4c:
+    needs: tutorial_particle_physics_4a
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: 4c_information_geometry.ipynb
+
+  tutorial_particle_physics_a1:
+    needs: tutorial_particle_physics_1
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A1_systematic_uncertainties.ipynb
+      outputs: >-
+        data/lhe_data_systematics.h5
+        data/setup_systematics.h5
+
+  tutorial_particle_physics_a2:
+    needs: build
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A2_ensemble_methods.ipynb
+
+  tutorial_particle_physics_a3:
+    needs: tutorial_particle_physics_1
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A3_reweighting_existing_samples.ipynb
+      outputs: data/setup_with_extra_benchmark.h5
+
+  tutorial_particle_physics_a4:
+    needs: tutorial_particle_physics_3a
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A4_lh_nosyst.ipynb
+
+  tutorial_particle_physics_a5:
+    needs: tutorial_particle_physics_a1
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A5_test_new_likelihood_module.ipynb
+
+  tutorial_particle_physics_a6:
+    needs: build
+    if: ${{ !cancelled() && !failure() }}
+    uses: ./.github/workflows/run-tutorial-notebook.yml
+    with:
+      working-directory: examples/tutorial_particle_physics
+      notebook: A6_finite_differences.ipynb
+      outputs: >-
+        data/lhe_data_fd.h5
+        data/setup_fd.h5
