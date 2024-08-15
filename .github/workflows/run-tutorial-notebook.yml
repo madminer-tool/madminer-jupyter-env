@@ -1,0 +1,103 @@
+# TODO: Move it to the scripts directory when the following issue is resolved:
+# https://github.com/orgs/community/discussions/10773#discussioncomment-2107255
+
+# NOTE: this is a reusable workflow intended to be called from the "Test notebooks" workflow.
+name: Run tutorial notebook in Docker
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: Working directory
+        required: false
+        default: .
+        type: string
+      notebook:
+        description: Notebook file to be executed
+        required: true
+        type: string
+      outputs:
+        description: Output files to be uploaded
+        required: false
+        default: ''
+        type: string
+      timeout:
+        description: Timeout per cell in seconds
+        required: false
+        default: 3600
+        type: number
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
+    - name: Download the image
+      uses: actions/download-artifact@v4
+      with:
+        name: image
+        path: /tmp
+
+    - name: Load the image
+      run: |
+        docker load --input /tmp/image.tar
+        docker image ls -a madminer-jupyter-env
+
+    - name: Prepare the shared volume
+      run: |
+        mkdir madminer_shared
+        git -C madminer_shared clone --depth=1 https://github.com/madminer-tool/madminer.git
+
+    - name: Download output files uploaded by previous jobs
+      uses: actions/download-artifact@v4
+      with:
+        pattern: output-*
+        merge-multiple: true
+
+    - name: Run the notebook in a container
+      id: run-notebook
+      continue-on-error: true
+      run: >
+        docker run
+        --rm
+        -v $(pwd)/madminer_shared:/home/shared
+        -v $(pwd)/.github/workflows/scripts/run-tutorial-notebook.sh:/tmp/run-tutorial-notebook.sh:ro
+        madminer-jupyter-env:latest
+        /tmp/run-tutorial-notebook.sh /home/shared/madminer/${{ inputs.working-directory }} ${{ inputs.notebook }} ${{ inputs.timeout }}
+
+    - name: Upload notebook and logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: log-${{ inputs.notebook }}
+        path: |
+          *madminer_shared/madminer/${{ inputs.working-directory }}/${{ inputs.notebook }}
+          *madminer_shared/madminer/${{ inputs.working-directory }}/**/*.log
+        if-no-files-found: ignore
+        overwrite: true
+
+    # Abort before saving output files, if the notebook execution failed.
+    - name: Error handling
+      if: ${{ steps.run-notebook.outcome == 'failure' }}
+      run: exit 1
+
+    # Prepend the prefix to each path in the given list.
+    # The wildcard at the beginning is necessary to preserve the directory structure.
+    - name: Construct artifact path
+      id: artifact-path
+      run: |
+        eof=EOF$(openssl rand -hex 8)
+        echo "value<<$eof" >>$GITHUB_OUTPUT
+        for f in ${{ inputs.outputs }}; do
+          echo '*madminer_shared/madminer/${{ inputs.working-directory }}'/"$f" >>$GITHUB_OUTPUT
+        done
+        echo "$eof" >>$GITHUB_OUTPUT
+
+    - name: Upload output files as artifacts
+      uses: actions/upload-artifact@v4
+      if: inputs.outputs != ''
+      with:
+        name: output-${{ inputs.notebook }}
+        path: ${{ steps.artifact-path.outputs.value }}
+        if-no-files-found: error
